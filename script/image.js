@@ -1,40 +1,33 @@
 const axios = require('axios');
-const fs = require('fs-extra');
-const path = require('path');
 
 module.exports.config = {
-	name: "img4",
-	version: "6.9",
-	credits: "dipto",
+	name: "image",
+	version: "1.0.1",
 	role: 0,
+	credits: "CHATGPT",
+	description: "Search for high-quality images using Unsplash API and return a specified number of results.",
+	usages: "{P}{N}",
 	hasPrefix: false,
-	description: "Generate images by sdxl",
-	usage: "text",
-	cooldown: 5,
-	aliases: ["image"]
+	cooldown: 5
 };
 
-module.exports.run = async function ({ api, event, args }) {
-	const prompt = args.join(" ");
-	const w = await api.sendMessage("𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗶𝗻𝗴 𝘆𝗼𝘂𝗿 𝗿𝗲𝗾𝘂𝗲𝘀𝘁 𝗽𝗹𝗲𝗮𝘀𝗲 𝘄𝗮𝗶𝘁 𝗮 𝗺𝗼𝗺𝗲𝗻𝘁...", event.threadID);
-	const url = `https://all-image-genator-d1p.onrender.com/dipto/sdxl?prompt=${encodeURIComponent(prompt)}`;
+module.exports.run = async function({ args, message }) {
 	try {
-		const response = await axios.get(url);
-		const imageUrls = response.data.imageUrls;
-		const imgPaths = [];
-		for (let i = 0; i < imageUrls.length; i++) {
-			const imgUrl = imageUrls[i];
-			const imgResponse = await axios.get(imgUrl, { responseType: 'arraybuffer' });const imgPath = path.join(__dirname, 'cache', `${i + 1}.jpg`);
-			await fs.outputFile(imgPath, imgResponse.data);
-			imgPaths.push(imgPath);}
-		await api.unsendMessage(w.messageID);
-		await api.sendMessage({
-			body: `✅ | Here's your images`,
-			attachment: imgPaths.map(imgPath => fs.createReadStream(imgPath))
-		}, event.threadID, event.messageID);
- imgPaths.forEach(imgPath => fs.unlink(imgPath));
+		const query = args.join(' ');
+		const numResults = parseInt(args[0]) || 5; // Default to 5 if no number is provided
+		const url = `https://api.unsplash.com/search/photos?page=1&per_page=${numResults}&query=${query}&client_id=oWmBq0kLICkR_5Sp7m5xcLTAdkNtEcRG7zrd55ZX6oQ`;
+
+		const { data } = await axios.get(url);
+		const results = data.results.map(result => result.urls.regular);
+
+		const attachments = await Promise.all(results.map(async url => {
+			const response = await axios.get(url, { responseType: 'arraybuffer' });
+			return { data: Buffer.from(response.data, 'binary'), name: 'image.jpg' };
+		}));
+
+		return message.reply({ body: `Here are the top ${numResults} high-quality image results for "${query}" from Unsplash:`, attachment: attachments });
 	} catch (error) {
 		console.error(error);
-		await api.sendMessage(`Generation failed!\nError: ${error.message}`, event.threadID, event.messageID);
+		return message.reply("Sorry, I couldn't find any results.");
 	}
 };

@@ -1,52 +1,53 @@
-const axios = require('axios');
-const fs = require('fs-extra');
+const axios = require("axios");
+const fs = require("fs-extra");
+const path = require("path");
+const KievRPSSecAuth = "FACSBBRaTOJILtFsMkpLVWSG6AN6C/svRwNmAAAEgAAACGr/CZI3/EJfUATeABTqPf1acSB+8vmkQDmT8UMsGvLdK+Zp+LcJSBDzZ9jmhussW5yrEM9BbvzE93krl3xRelOZ8akSR9DflM8Tfno4I0N/jlFseNu6/FMJrxHPe6Yqiw+Ri23HlnyQkONrGTDVx5yGO1zbH1VowxpHaGpM9P98Fw90m3Fn79x8PPxuVLkYccq08kmKLRZZhUka1uUqkFdzUNbdvXbEqHePV6fROZzVVZ4PSBZmQQBc3xBIepUuPqSaUR7Umi0uBSg7/D87MVjBQ9cGRYGQKi/+B+Fol30EDm2XXoY1CsUAqXD+4UI/TFkgxingEPpqA+LXUPp8Jg6uqHD198tkYVS0R88ZBNODUX4qH7x/QE/Bun9RjESRgoGMB7Y0zfB4tDURD2hXW+b9BitUrlu06WyBeoPTle0f5Kxh6Cp6SYWummB82dHsYzh3tzTBA+wvAv+DDeyUv5gA3zFBlFsAFe3ZebPKgopOLOTcvd7fyJrNNt7OKQGsiNWPj7FGdM8XYrxz3xyHl9AtlFQ0c6KnPe/GvQXMpFr09YIcRV0Zc5PuQEMmwrQJ0bLv9GOLSyKAvk7O2POOw0RVKFKkI/KzUbMtv3/AfDSsfMVu6fMC/Mh4jDk4oVCXdfqVwOFDsdMmE07Qfjna8ApsVdnjpmAsLFk1knLuPNRk+Fy2glDmQNhs99+PpNbCEiDmGZzIceO/l+C6PO5EYMlTkxTcN6As5xFm9pZW9OVKr0KEJwrTBnV+3qXGVBh/pqv5an0Hqt6VFN+7PFDj81gn5ueqbIfBCHcNyXtDiFbwR4ZAbGhNj8JmtjblZQmbb56TTwt/Bk69LAeEZu8Lv2y8Assm2ng1jx8exIWSLQ1BppR4/sgwlxOSkjZZ2rIIuJpTBaZ4yp+n7RupjjEDfFiUjg0jqanlNhIu621MIvzf4mIKo4PQ3Ca0KarnpknsRdI97fcLL2f+mAG1quUf4kkiRslgLVQZkWZWzCVEiAyobfbHkhxvNdKt9tzkPLtbGFGbfdPRGYdjEFE5kpsjXXzNSqqG93GhZwFX6PvPHXqogkdymyQ0yrV3dGS8C8dKtBpYAVIGyco6a/r8BRfP2KjAl3ARhIHjviIHa6gx5ldPvMso35NTI/V7U6xwVuA2BcVttcIEPTbiKP7Wl4lfNiANDTgeHB3boXI2moMFHRxU/mIG+HS4sMSYdVM4DQ5Igj8YQ8KnW8D5ceeciiXOTWB7gbASToQTEA7DVCi1zXs+hedZb7cUgDBB05LMV1UE5j2Vf3T2H6EbDitjlhfqVSEkNBBZK1EI3VrYHc7E8fyWKIMbjBzqcXC7PH3RLf1z3NIDPulDm6KMbJ2IplDi59ocODxDhyadAMaHXfvSmGH2GIeFi6GYAgTnCPbo/jv/c1d7rCO6gtH3meGX2I2hWdqILOqvmY0f6Q92Vgcql7mWXDAappIKbfGtV5Ay+87B9ydB7/4Ta6E3UTEUABs2tkjhx088LHZ/zXuzV5QzTDx7";
+const _U = "1MBj2g3P1QxOWMjpdQdDkXVQAj512VfPb--wvpwcUrWPxTvNE4XDzTkwncFg_RCz_jidqLFhFaB750ZucXxRNIWx3rfIOYnLnxqgQEV6ec899MmeQnFtpGFmbhLDyLm3hw0bg_rkwHXTzDAQhmPy_Yvn_laB0vDCF7juex6l10yHB1cYUcOWLkXQ9p7p8w11_mVdpBdKMAzHNHxxUBmtsGg0YTpBdzgoSDGZVWACF_Z8";
 
 module.exports.config = {
-		name: "dalle",
-		version: "1.0",
-		credits: "dipto",
-		role: 0,
-		aliases: ["dal"],
-		hasPrefix: false,
-		description: "Generate images by Dalle-3 AI",
-		usage: "[text] \nJamon [A 17/18/19 years old boy/girl watching football match on tv and written Dipto and 69 on the back of his Dress , 4k]",
-		cooldown: 5
+	name: "dalle",
+	version: "1.0",
+	role: 0,
+	credits: "cliff",//api by Samir
+	hasPrefix: false,
+	description: "dalle",
+	usages: "{prefix}dalle <search query> -<number of images>",
+	cooldown: 0,
+	aliases: ["dalle"],
 };
 
-module.exports.run = async function ({ api, event, args }) {
-		const prompt = event.messageReply ? event.messageReply.body.split("dalle")[1] : args.join(" ");
-		if (!prompt) {
-				return api.sendMessage("❌| Wrong Format. Use: 17/18 years old boy/girl watching football match on tv and written Dipto and 69 on the back of his Dress , 4k", event.threadID, event.messageID);
+module. exports. run = async function ({ api, event, args }) {
+	const keySearch = args.join(" ");
+	const indexOfHyphen = keySearch.indexOf('-');
+	const keySearchs = indexOfHyphen !== -1 ? keySearch.substr(0, indexOfHyphen).trim() : keySearch.trim();
+	const numberSearch = parseInt(keySearch.split("-").pop().trim()) || 4;
+
+	try {
+		const res = await axios.get(`https://api-dalle-gen.onrender.com/dalle3?auth_cookie_U=${_U}&auth_cookie_KievRPSSecAuth=${KievRPSSecAuth}&prompt=${encodeURIComponent(keySearchs)}`);
+		const data = res.data.results.images;
+
+		if (!data || data.length === 0) {
+			api.sendMessage("No images found for the provided query.", event.threadID, event.messageID);
+			return;
 		}
 
-		try {
-				const tl = ["1tRFtA_GSDs9RM26N-BijI6XQHAhn0rP9BJI8XHEvKANLSk4Kxvg3wTHQv9cZvUxW12MoCPhhGwyl5DZ3G27gZlLnQgYgGZHRfjSy3QER6_fukTsInT0dMwY5HPJxmYgVvbYEJ-wcr8bU64MCIvhCDroq3iNrgBuDBbvDxU8xIDFIPQkVXtlBmqeJgj6vlak4c3m0_fzhodLJsV1z3CtM_w","1CIT2tyZlpV-CBkILdQdbGcY0ESC08NglE36IEnQIjzoG5mE1G8sFMDX5zpE2dv8A9AyjgxtJrYS0WuQSbNrRHXynfbfM-T0KJH_vDDHfhIGKqEABz19-77i9yUoYaGX8w0CQWrDpJPG0Dw5uVOczNUEvNW2lt_Uc1EqIWBR31PH53MrYFgJaxQey_UIM7kz73eovZnf_ogv0kOt9kGe28w","10PTOfSXdahcigvRXycv6gKeOkzDCyJ0KuMtxXCxwc3JC6R5XnOp8f8phy32sh6Fi6k2rlUThW5vj9qj6KVTS0Xem-lxQRT1xJLo2v1OQZsqUBfgp4fcrphaIk7fiuImwh3PPPw5UNdsSHfL9l8tsVvjjjxmiU1wG0CX3UnYSA79n3KOhTWeMRRPfhTqF2RAwmCYZYZPkHqloIL0wusdKowQuiDlQlNYo57dTfg_lizE",	"1sHbtNwddEkfLtBJttbj7agu6tQ2H0QKKBrWotqZB8aTujBrDq1h_H1kPw2nih2OtjNgqq6ORqFptp4y8yVUCG-0-5yeAixxn5sSllB929HoE7BwW3FsSXLh8yyCxNSfzgodn78E4daGAxFxHvkg8GBl3a_Z9Rav72ahn79JGeYhu1LpT1S9ItPPhp0bvjx-Bqu_HKVMA8vZkstoUk9U7Aw", "1cy2YaxM-WIny0qz06wNYQSehwdAs421aTDBLo8sPmqAdnrPypo919wEWB5iqLgb7_NVqxbVqMdCA187KhJx3zi22arsnWGvHgBjZZEu1a1OVsfNWhWKtSQtbnVVDb1-5qzfrfEnqx6o4kfuOJ9yYX9p-SzOT82u9s7phDtisHTAvcWl6gtb1mL0xX4EsRqEMfpp99QNTJnZ7bnwzmg2GAw", "1kas7WreKB-_MmT1tJGT1p69QylAos1texCIBJ6DSsmwuVSfnxaOYyaYYdDBMmk9c0w0QyXqsqrTsIwU4t9P32bAlWSB09-AkVchYjO-Hu9VMR8KxxRiRxasZaZIwyebxY7ZtiCn6m5ApJmZDhEsZwvuSCtpAtTK_aFtay1lDF5TO8R8bIcKE3u0oj0_IEKC6eXtuawl--SqAhoNJsE8A0A", "18R6NW4jhkTg5kSSX709Ff38C6wd1c-2fBbCAZ4vVEmiF0idE7fhqqR8hdbEyk6YQ7fxvzSK_-spsz6K5zJNr8u7OAVrianSOgnXHebeUfb6chziCdGlAD8gljTvfz_WsqSfOWJcywGfCjqdY0kMKY3xgYbJQkm_-lm9G3oxPcyE85hCv9_imupp1Tbm5wjTUjRpViMTdI8pgJhfSBl1Y6Q!", "1Ds-6ioHQpXWrX5VkattZfBkOexPf00jgX4Inly5vR3XbRFd0had4b5YipQLGKv_WnzieEX5rOx5gYGdMYASHS6Eh7s9JXsJrDlO64nrSssdbxVyhpDTH6WVLyY-RTvM33WjB3hPLVmJSOiKHvSR6SVnTJTeZWwlmvWOUXZh7Tb5WMryUIqk5KaskF2qc3vLhsu01eIDrjmk67PSVUWV53Q"];
-				const cookies = tl[Math.floor(Math.random() * tl.length)];
-				const w = await api.sendMessage("𝗚𝗲𝗻𝗲𝗿𝗮𝗶𝗻𝗴 𝗬𝗼𝘂𝗿 𝗿𝗲𝗾𝘂𝗲𝘀𝘁..", event.threadID);
-
-				const response = await axios.get(`https://all-image-genator-d1p.onrender.com/dipto/dalle?prompt=${prompt}&key=dipto008&cookie=${cookies}`)
-				const data = response.data.imgUrls;
-
-				if (!data || data.length === 0) {
-						return api.sendMessage("No images generated.", event.threadID, event.messageID);
-				}
-
-				const diptoo = [];
-				for (let i = 0; i < data.length; i++) {
-						const imgUrl = data[i];
-						const imgResponse = await axios.get(imgUrl, { responseType: 'arraybuffer' });
-						const imgPath = __dirname + `/cache/${i + 1}.jpg`;
-						await fs.outputFile(imgPath, imgResponse.data);
-						diptoo.push(fs.createReadStream(imgPath));
-				}
-
-				await api.unsendMessage(w.messageID);
-				await api.sendMessage({
-						body: `✅ | Here's your generated image`,
-						attachment: diptoo
-				}, event.threadID, event.messageID);
-		} catch (error) {
-				console.error(error);
-				await api.sendMessage(`Generation failed!\nError: ${error.message}`, event.threadID, event.messageID);
+		const imgData = [];
+		for (let i = 0; i < Math.min(numberSearch, data.length); i++) {
+			const imgResponse = await axios.get(data[i].url, { responseType: 'arraybuffer' });
+			const imgPath = path.join(__dirname, 'cache', `${i + 1}.jpg`);
+			await fs.outputFile(imgPath, imgResponse.data);
+			imgData.push(fs.createReadStream(imgPath));
 		}
+
+		await api.sendMessage({
+			attachment: imgData,
+			body: `Here's your generated image`
+		}, event.threadID, event.messageID);
+
+	} catch (error) {
+		console.error(error);
+		api.sendMessage("cookie of the command. Is expired", event.threadID, event.messageID);
+	} finally {
+		await fs.remove(path.join(__dirname, 'cache'));
+	}
 };
