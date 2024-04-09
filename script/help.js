@@ -76,7 +76,7 @@ module.exports.run = async function ({
 		const commands = enableCommands[0].commands;
 		if (!input) {
 			const pages = 999;
-			let page = 1;
+			let page = 3;
 			let start = (page - 1) * pages;
 			let end = start + pages;
 			let helpMessage = `🔴🟢🟡\n\n====『 𝗖𝗢𝗠𝗠𝗔𝗡𝗗 𝗟𝗜𝗦𝗧 』====\n▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱\n\n♡  ∩_∩\n（„• ֊ •„)♡\n╭─∪∪───────────⟡`;
